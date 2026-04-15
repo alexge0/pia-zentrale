@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pia ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c9606a;
+    --rose-light: #f5e8e9;
+    --rose-mid: #e8bfc2;
+    --rose-dark: #8b3a42;
+    --cream: #faf7f4;
+    --warm-white: #fff9f7;
+    --text: #2a1f20;
+    --text-muted: #8a7070;
+    --text-light: #b5a0a2;
+    --border: rgba(180,130,135,0.2);
+    --border-hover: rgba(180,130,135,0.45);
+    --shadow: 0 2px 20px rgba(120,60,65,0.08);
+    --shadow-lg: 0 8px 40px rgba(120,60,65,0.14);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── AUTH ── */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #auth-screen::before {
+    content: '';
+    position: fixed;
+    top: -120px; right: -120px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,96,106,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .auth-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .auth-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: var(--rose);
+    text-align: center;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.02em;
+  }
+
+  .auth-sub {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 2rem;
+  }
+
+  .field-group { margin-bottom: 1rem; }
+  .field-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; letter-spacing: 0.03em; }
+
+  input[type="email"], input[type="password"], input[type="text"], input[type="number"], input[type="date"], input[type="color"], select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(201,96,106,0.1);
+  }
+
+  textarea { resize: vertical; min-height: 72px; }
+  input[type="color"] { padding: 4px 8px; height: 38px; cursor: pointer; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    border: none;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--rose);
+    color: #fff;
+    width: 100%;
+    padding: 12px;
+  }
+  .btn-primary:hover { background: var(--rose-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,96,106,0.3); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); background: var(--rose-light); }
+
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+    background: var(--rose-light);
+    color: var(--rose-dark);
+    border: 1px solid var(--rose-mid);
+  }
+  .btn-sm:hover { background: var(--rose-mid); }
+
+  .btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1;
+    transition: all .15s;
+  }
+  .btn-icon:hover { background: var(--rose-light); color: var(--rose); }
+
+  .auth-error {
+    background: #fdf0f0;
+    border: 1px solid #f0c0c0;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #c0404a;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* ── APP SHELL ── */
+  #app-screen { display: none; min-height: 100vh; }
+
+  .topbar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+  }
+
+  .topbar-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--rose);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  .user-pill {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--rose-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .tabs-bar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab-btn:hover { color: var(--rose); }
+  .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+  .main-content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .section { display: none; animation: fadeIn .2s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── OVERVIEW ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem;
+    text-align: center;
+    transition: box-shadow .2s;
+  }
+  .stat-card:hover { box-shadow: var(--shadow); }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--rose);
+    line-height: 1.1;
+  }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 500; letter-spacing: 0.04em; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 10px;
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: var(--shadow); }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .card-title { font-size: 14px; font-weight: 500; line-height: 1.4; }
+  .card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-rose { background: var(--rose-light); color: var(--rose-dark); }
+  .badge-green { background: #e8f5e8; color: #2d6a2d; }
+  .badge-amber { background: #fdf3e0; color: #8a5c00; }
+  .badge-blue { background: #e8f0fd; color: #2a4a8a; }
+  .badge-done { background: #f0f0f0; color: #888; }
+
+  /* ── MODALS ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30,10,12,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--warm-white);
+    border-radius: 18px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(.97) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+  .modal-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 1.25rem;
+  }
+
+  .form-row { margin-bottom: 10px; }
+  .form-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 1.25rem;
+  }
+
+  /* ── DATE ROWS ── */
+  .date-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .date-row:last-child { border-bottom: none; }
+
+  .date-icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--rose-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .countdown {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .countdown-soon { background: #fdf3e0; color: #8a5c00; }
+  .countdown-today { background: var(--rose-light); color: var(--rose-dark); }
+  .countdown-normal { background: #f0f0f0; color: #666; }
+
+  /* ── PREFS ── */
+  .pref-cat-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    margin: 1.25rem 0 6px;
+  }
+
+  /* ── TODOS ── */
+  .todo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .todo-row:last-child { border-bottom: none; }
+
+  .todo-row input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--rose);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .todo-text { font-size: 13px; flex: 1; }
+  .todo-text.done { text-decoration: line-through; color: var(--text-light); }
+
+  /* ── GIFT DETAILS ── */
+  .gift-price { font-size: 13px; font-weight: 500; color: var(--rose-dark); }
+  .gift-link { font-size: 12px; color: #2a6aaa; text-decoration: none; }
+  .gift-link:hover { text-decoration: underline; }
+  .color-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+  /* ── MEMORY ── */
+  .memory-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-top: 6px; font-style: italic; }
+  .memory-date { font-size: 11px; color: var(--text-light); margin-top: 6px; }
+
+  /* ── EMPTY ── */
+  .empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+  .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: .5; }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--rose);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto 0.75rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 500px) {
+    .main-content { padding: 1.25rem 1rem; }
+    .form-2, .form-3 { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Pia ♡</div>
+    <p class="auth-sub">Deine persönliche Zentrale</p>
+    <div id="auth-error" class="auth-error"></div>
+    <div class="field-group"><label>E-Mail</label><input type="email" id="auth-email" placeholder="deine@email.de" autocomplete="email"></div>
+    <div class="field-group"><label>Passwort</label><input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="doLogin()">Anmelden</button>
+    <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-light)">Kein Account? <a href="#" onclick="doRegister()" style="color:var(--rose)">Registrieren</a></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <span>Pia ♡</span>
+    </div>
+    <div class="topbar-right">
+      <span class="user-pill" id="user-email-display"></span>
+      <button class="btn btn-ghost" onclick="doLogout()" style="padding:6px 12px;font-size:12px">Logout</button>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Übersicht</button>
+    <button class="tab-btn" onclick="showTab('gifts',this)">🎁 Geschenke</button>
+    <button class="tab-btn" onclick="showTab('prefs',this)">♡ Vorlieben</button>
+    <button class="tab-btn" onclick="showTab('dates',this)">📅 Termine</button>
+    <button class="tab-btn" onclick="showTab('dateideas',this)">✨ Date-Ideen</button>
+    <button class="tab-btn" onclick="showTab('memories',this)">📖 Erinnerungen</button>
+  </div>
+
+  <div class="main-content">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="tab-overview">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="card">
+        <p style="font-size:13px;font-weight:500;margin-bottom:10px">Nächste Anlässe</p>
+        <div id="upcoming-dates"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <p style="font-size:13px;font-weight:500">To-do & Erinnerungen</p>
+          <button class="btn btn-sm" onclick="addTodo()">+ Neu</button>
+        </div>
+        <div id="todo-list"></div>
+      </div>
+    </div>
+
+    <!-- GIFTS -->
+    <div class="section" id="tab-gifts">
+      <div class="section-header">
+        <h2 class="section-title">Geschenkideen</h2>
+        <button class="btn btn-sm" onclick="openModal('gift')">+ Neu</button>
+      </div>
+      <div id="gift-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+    <!-- PREFS -->
+    <div class="section" id="tab-prefs">
+      <div class="section-header">
+        <h2 class="section-title">Vorlieben</h2>
+        <button class="btn btn-sm" onclick="openModal('pref')">+ Neu</button>
+      </div>
+      <div id="pref-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+    <!-- DATES -->
+    <div class="section" id="tab-dates">
+      <div class="section-header">
+        <h2 class="section-title">Wichtige Termine</h2>
+        <button class="btn btn-sm" onclick="openModal('date')">+ Neu</button>
+      </div>
+      <div id="date-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+    <!-- DATE IDEAS -->
+    <div class="section" id="tab-dateideas">
+      <div class="section-header">
+        <h2 class="section-title">Date-Ideen</h2>
+        <button class="btn btn-sm" onclick="openModal('dateidea')">+ Neu</button>
+      </div>
+      <div id="dateidea-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+    <!-- MEMORIES -->
+    <div class="section" id="tab-memories">
+      <div class="section-header">
+        <h2 class="section-title">Erinnerungen</h2>
+        <button class="btn btn-sm" onclick="openModal('memory')">+ Neu</button>
+      </div>
+      <div id="memory-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-gift">
+  <div class="modal">
+    <p class="modal-title">Geschenkidee</p>
+    <div class="form-row"><label>Name *</label><input type="text" id="g-name" placeholder="z.B. Parfum Maison Margiela"></div>
+    <div class="form-2">
+      <div class="form-row"><label>Preis (€)</label><input type="number" id="g-price" placeholder="49.99" step="0.01"></div>
+      <div class="form-row"><label>Farbe</label><input type="color" id="g-color" value="#f4c0d1"></div>
+    </div>
+    <div class="form-row"><label>Link</label><input type="text" id="g-link" placeholder="https://..."></div>
+    <div class="form-row"><label>Kategorie</label>
+      <select id="g-cat">
+        <option>Wunschliste</option><option>Geburtstag</option><option>Weihnachten</option><option>Jahrestag</option><option>Spontan</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Notizen</label><textarea id="g-notes" placeholder="Größe, Farbe, Variante…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('gift')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveGift()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pref">
+  <div class="modal">
+    <p class="modal-title">Vorliebe hinzufügen</p>
+    <div class="form-row"><label>Bezeichnung *</label><input type="text" id="p-name" placeholder="z.B. Lieblingsschokolade: Milka Oreo"></div>
+    <div class="form-row"><label>Kategorie</label>
+      <select id="p-cat">
+        <option>Essen & Trinken</option><option>Mode</option><option>Musik</option><option>Filme & Serien</option><option>Orte</option><option>Hobbys</option><option>Sonstiges</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Notizen</label><textarea id="p-notes" placeholder="Details, Hintergrund…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('pref')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="savePref()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-date">
+  <div class="modal">
+    <p class="modal-title">Termin eintragen</p>
+    <div class="form-row"><label>Bezeichnung *</label><input type="text" id="d-name" placeholder="z.B. Geburtstag Pia"></div>
+    <div class="form-2">
+      <div class="form-row"><label>Datum *</label><input type="date" id="d-date"></div>
+      <div class="form-row"><label>Typ</label>
+        <select id="d-type"><option value="Geburtstag">🎂 Geburtstag</option><option value="Jahrestag">♡ Jahrestag</option><option value="Sonstiges">📅 Sonstiges</option></select>
+      </div>
+    </div>
+    <div class="form-row"><label>Jährlich wiederkehrend</label>
+      <select id="d-recurring"><option value="true">Ja</option><option value="false">Nein</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('date')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveDate()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-dateidea">
+  <div class="modal">
+    <p class="modal-title">Date-Idee</p>
+    <div class="form-row"><label>Idee *</label><input type="text" id="di-name" placeholder="z.B. Aperol-Abend am Rhein"></div>
+    <div class="form-2">
+      <div class="form-row"><label>Kategorie</label>
+        <select id="di-cat"><option>Essen</option><option>Ausflug</option><option>Zuhause</option><option>Kultur</option><option>Abenteuer</option><option>Reise</option></select>
+      </div>
+      <div class="form-row"><label>Status</label>
+        <select id="di-done"><option value="false">Noch offen</option><option value="true">Gemacht ✓</option></select>
+      </div>
+    </div>
+    <div class="form-row"><label>Notizen</label><textarea id="di-notes" placeholder="Details, Links…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('dateidea')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveDateIdea()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-memory">
+  <div class="modal">
+    <p class="modal-title">Erinnerung festhalten</p>
+    <div class="form-row"><label>Titel *</label><input type="text" id="m-title" placeholder="z.B. Erstes gemeinsames Konzert"></div>
+    <div class="form-row"><label>Datum</label><input type="date" id="m-date"></div>
+    <div class="form-row"><label>Beschreibung</label><textarea id="m-text" placeholder="Was war besonders? Was habt ihr erlebt?" style="min-height:90px"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('memory')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveMemory()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ─────────────────────────────────────────────
+  // 🔧 HIER DEINE FIREBASE CONFIG EINTRAGEN
+  // ─────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "DEIN_API_KEY",
+    authDomain:        "DEIN_PROJECT.firebaseapp.com",
+    projectId:         "DEIN_PROJECT_ID",
+    storageBucket:     "DEIN_PROJECT.appspot.com",
+    messagingSenderId: "DEINE_SENDER_ID",
+    appId:             "DEINE_APP_ID"
+  };
+  // ─────────────────────────────────────────────
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── AUTH ──
+  window.doLogin = async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const pass  = document.getElementById('auth-pass').value;
+    const errEl = document.getElementById('auth-error');
+    errEl.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      errEl.textContent = 'Fehler: ' + (e.code === 'auth/invalid-credential' ? 'E-Mail oder Passwort falsch.' : e.message);
+      errEl.style.display = 'block';
+    }
+  };
+
+  window.doRegister = async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const pass  = document.getElementById('auth-pass').value;
+    const errEl = document.getElementById('auth-error');
+    errEl.style.display = 'none';
+    if(!email || pass.length < 6) { errEl.textContent = 'Bitte E-Mail und mind. 6-stelliges Passwort eingeben.'; errEl.style.display='block'; return; }
+    try {
+      await createUserWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      errEl.textContent = 'Fehler: ' + e.message;
+      errEl.style.display = 'block';
+    }
+  };
+
+  window.doLogout = () => signOut(auth);
+
+  // Enter-Taste im Login
+  document.getElementById('auth-pass').addEventListener('keydown', e => { if(e.key==='Enter') window.doLogin(); });
+
+  // ── AUTH STATE ──
+  let uid = null;
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      uid = user.uid;
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display  = 'block';
+      document.getElementById('user-email-display').textContent = user.email;
+      loadAll();
+    } else {
+      uid = null;
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('app-screen').style.display  = 'none';
+    }
+  });
+
+  // ── HELPERS ──
+  const col = name => collection(db, `users/${uid}/${name}`);
+
+  async function getAll(name) {
+    try {
+      const snap = await getDocs(query(col(name), orderBy('createdAt','desc')));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch { return []; }
+  }
+
+  async function addItem(name, data) {
+    await addDoc(col(name), { ...data, createdAt: serverTimestamp() });
+    loadAll();
+  }
+
+  async function deleteItem(name, id) {
+    await deleteDoc(doc(db, `users/${uid}/${name}`, id));
+    loadAll();
+  }
+
+  async function updateItem(name, id, data) {
+    await updateDoc(doc(db, `users/${uid}/${name}`, id), data);
+    loadAll();
+  }
+
+  // ── LOAD ALL ──
+  async function loadAll() {
+    const [gifts, prefs, dates, dateIdeas, memories, todos] = await Promise.all([
+      getAll('gifts'), getAll('prefs'), getAll('dates'),
+      getAll('dateIdeas'), getAll('memories'), getAll('todos')
+    ]);
+    renderOverview(gifts, prefs, dateIdeas, memories, todos, dates);
+    renderGifts(gifts);
+    renderPrefs(prefs);
+    renderDates(dates);
+    renderDateIdeas(dateIdeas);
+    renderMemories(memories);
+  }
+
+  // ── UTILS ──
+  function daysUntil(dateStr, recurring) {
+    if(!dateStr) return null;
+    const today = new Date(); today.setHours(0,0,0,0);
+    let d = new Date(dateStr);
+    if(recurring === true || recurring === 'true') {
+      d.setFullYear(today.getFullYear());
+      if(d < today) d.setFullYear(today.getFullYear()+1);
+    }
+    return Math.round((d - today) / 86400000);
+  }
+
+  function fmtDate(str) {
+    if(!str) return '';
+    return new Date(str).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
+  }
+
+  function countdownHtml(days) {
+    if(days === 0) return `<span class="countdown countdown-today">Heute!</span>`;
+    if(days <= 7)  return `<span class="countdown countdown-soon">in ${days} Tag${days===1?'':'en'}</span>`;
+    return `<span class="countdown countdown-normal">${days} Tage</span>`;
+  }
+
+  // ── RENDER OVERVIEW ──
+  function renderOverview(gifts, prefs, dateIdeas, memories, todos, dates) {
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-num">${gifts.length}</div><div class="stat-label">Geschenkideen</div></div>
+      <div class="stat-card"><div class="stat-num">${prefs.length}</div><div class="stat-label">Vorlieben</div></div>
+      <div class="stat-card"><div class="stat-num">${dateIdeas.filter(d=>!d.done||d.done==='false').length}</div><div class="stat-label">Date-Ideen</div></div>
+      <div class="stat-card"><div class="stat-num">${memories.length}</div><div class="stat-label">Erinnerungen</div></div>
+    `;
+
+    const icons = {Geburtstag:'🎂',Jahrestag:'♡',Sonstiges:'📅'};
+    const sorted = dates.filter(d=>d.date).map(d=>({...d, days:daysUntil(d.date,d.recurring)})).sort((a,b)=>a.days-b.days).slice(0,3);
+    document.getElementById('upcoming-dates').innerHTML = sorted.length
+      ? sorted.map(d=>`
+          <div class="date-row">
+            <div class="date-icon">${icons[d.type]||'📅'}</div>
+            <div style="flex:1"><p style="font-size:13px;font-weight:500">${d.name}</p><p style="font-size:11px;color:var(--text-muted)">${fmtDate(d.date)}</p></div>
+            ${countdownHtml(d.days)}
+          </div>`).join('')
+      : '<p style="font-size:13px;color:var(--text-light);padding:4px 0">Noch keine Termine eingetragen</p>';
+
+    document.getElementById('todo-list').innerHTML = todos.length
+      ? todos.map(t=>`
+          <div class="todo-row">
+            <input type="checkbox" ${t.done?'checked':''} onchange="window._toggleTodo('${t.id}',${!t.done})">
+            <span class="todo-text ${t.done?'done':''}">${t.text}</span>
+            <button class="btn-icon" onclick="window._deleteItem('todos','${t.id}')">✕</button>
+          </div>`).join('')
+      : '<p style="font-size:13px;color:var(--text-light)">Keine Einträge</p>';
+  }
+
+  window.addTodo = async () => {
+    const text = prompt('Erinnerung eingeben:');
+    if(text && text.trim()) await addItem('todos', {text: text.trim(), done: false});
+  };
+
+  window._toggleTodo = async (id, done) => updateItem('todos', id, {done});
+  window._deleteItem = async (col, id) => deleteItem(col, id);
+
+  // ── RENDER GIFTS ──
+  function renderGifts(gifts) {
+    const catBadge = {Wunschliste:'badge-rose',Geburtstag:'badge-amber',Weihnachten:'badge-green',Jahrestag:'badge-rose',Spontan:'badge-green'};
+    document.getElementById('gift-list').innerHTML = gifts.length
+      ? gifts.map(g=>`
+          <div class="card">
+            <div class="card-header">
+              <div style="display:flex;align-items:center;gap:7px;flex:1;min-width:0">
+                <span class="color-dot" style="background:${g.color||'#f4c0d1'}"></span>
+                <span class="card-title" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.name}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                ${g.price?`<span class="gift-price">${parseFloat(g.price).toFixed(2)} €</span>`:''}
+                <span class="badge ${catBadge[g.cat]||'badge-rose'}">${g.cat}</span>
+                <button class="btn-icon" onclick="window._deleteItem('gifts','${g.id}')">✕</button>
+              </div>
+            </div>
+            ${g.link?`<a class="gift-link" href="${g.link.startsWith('http')?g.link:'https://'+g.link}" target="_blank" rel="noopener">🔗 Link öffnen</a>`:''}
+            ${g.notes?`<p class="card-sub" style="margin-top:5px">${g.notes}</p>`:''}
+          </div>`).join('')
+      : '<div class="empty"><div class="empty-icon">🎁</div>Noch keine Geschenkideen</div>';
+  }
+
+  // ── RENDER PREFS ──
+  function renderPrefs(prefs) {
+    if(!prefs.length){ document.getElementById('pref-list').innerHTML='<div class="empty"><div class="empty-icon">♡</div>Noch keine Vorlieben</div>'; return; }
+    const byCat = {};
+    prefs.forEach(p=>{ if(!byCat[p.cat]) byCat[p.cat]=[]; byCat[p.cat].push(p); });
+    document.getElementById('pref-list').innerHTML = Object.entries(byCat).map(([cat,items])=>`
+      <p class="pref-cat-label">${cat}</p>
+      ${items.map(p=>`
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">${p.name}</span>
+            <button class="btn-icon" onclick="window._deleteItem('prefs','${p.id}')">✕</button>
+          </div>
+          ${p.notes?`<p class="card-sub">${p.notes}</p>`:''}
+        </div>`).join('')}`).join('');
+  }
+
+  // ── RENDER DATES ──
+  function renderDates(dates) {
+    const icons = {Geburtstag:'🎂',Jahrestag:'♡',Sonstiges:'📅'};
+    document.getElementById('date-list').innerHTML = dates.length
+      ? dates.map(d=>{
+          const days = daysUntil(d.date, d.recurring);
+          return `<div class="card">
+            <div class="card-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:20px">${icons[d.type]||'📅'}</span>
+                <div><p class="card-title">${d.name}</p><p class="card-sub">${fmtDate(d.date)}${d.recurring==='true'||d.recurring===true?' · jährlich':''}</p></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                ${days!==null?countdownHtml(days):''}
+                <button class="btn-icon" onclick="window._deleteItem('dates','${d.id}')">✕</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('')
+      : '<div class="empty"><div class="empty-icon">📅</div>Noch keine Termine</div>';
+  }
+
+  // ── RENDER DATE IDEAS ──
+  function renderDateIdeas(dateIdeas) {
+    if(!dateIdeas.length){ document.getElementById('dateidea-list').innerHTML='<div class="empty"><div class="empty-icon">✨</div>Noch keine Date-Ideen</div>'; return; }
+    const catBadge = {Essen:'badge-amber',Ausflug:'badge-green',Zuhause:'badge-rose',Kultur:'badge-blue',Abenteuer:'badge-amber',Reise:'badge-blue'};
+    const open = dateIdeas.filter(d=>!d.done||d.done==='false');
+    const done = dateIdeas.filter(d=>d.done===true||d.done==='true');
+    const renderGroup = items => items.map(d=>`
+      <div class="card" style="${d.done===true||d.done==='true'?'opacity:.55':''}">
+        <div class="card-header">
+          <span class="card-title">${d.name}</span>
+          <div style="display:flex;gap:5px;align-items:center">
+            <span class="badge ${catBadge[d.cat]||'badge-rose'}">${d.cat}</span>
+            <button class="btn-icon" title="${d.done===true||d.done==='true'?'Rückgängig':'Erledigt'}"
+              onclick="window._toggleDateIdea('${d.id}',${!(d.done===true||d.done==='true')})">
+              ${d.done===true||d.done==='true'?'↩':'✓'}
+            </button>
+            <button class="btn-icon" onclick="window._deleteItem('dateIdeas','${d.id}')">✕</button>
+          </div>
+        </div>
+        ${d.notes?`<p class="card-sub">${d.notes}</p>`:''}
+      </div>`).join('');
+    document.getElementById('dateidea-list').innerHTML =
+      renderGroup(open) +
+      (done.length?`<p class="pref-cat-label" style="margin-top:1.25rem">Bereits gemacht</p>${renderGroup(done)}`:'');
+  }
+
+  window._toggleDateIdea = async (id, done) => updateItem('dateIdeas', id, {done});
+
+  // ── RENDER MEMORIES ──
+  function renderMemories(memories) {
+    document.getElementById('memory-list').innerHTML = memories.length
+      ? memories.map(m=>`
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">${m.title}</span>
+              <button class="btn-icon" onclick="window._deleteItem('memories','${m.id}')">✕</button>
+            </div>
+            ${m.text?`<p class="memory-text">"${m.text}"</p>`:''}
+            ${m.date?`<p class="memory-date">${fmtDate(m.date)}</p>`:''}
+          </div>`).join('')
+      : '<div class="empty"><div class="empty-icon">📖</div>Noch keine Erinnerungen</div>';
+  }
+
+  // ── SAVE FUNCTIONS ──
+  window.saveGift = async () => {
+    const name = document.getElementById('g-name').value.trim();
+    if(!name) return;
+    await addItem('gifts', {
+      name,
+      price: document.getElementById('g-price').value || '',
+      color: document.getElementById('g-color').value,
+      link:  document.getElementById('g-link').value.trim(),
+      cat:   document.getElementById('g-cat').value,
+      notes: document.getElementById('g-notes').value.trim()
+    });
+    ['g-name','g-price','g-link','g-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('g-color').value='#f4c0d1';
+    closeModal('gift');
+  };
+
+  window.savePref = async () => {
+    const name = document.getElementById('p-name').value.trim();
+    if(!name) return;
+    await addItem('prefs', { name, cat: document.getElementById('p-cat').value, notes: document.getElementById('p-notes').value.trim() });
+    ['p-name','p-notes'].forEach(id=>document.getElementById(id).value='');
+    closeModal('pref');
+  };
+
+  window.saveDate = async () => {
+    const name = document.getElementById('d-name').value.trim();
+    if(!name) return;
+    await addItem('dates', { name, date: document.getElementById('d-date').value, type: document.getElementById('d-type').value, recurring: document.getElementById('d-recurring').value === 'true' });
+    ['d-name','d-date'].forEach(id=>document.getElementById(id).value='');
+    closeModal('date');
+  };
+
+  window.saveDateIdea = async () => {
+    const name = document.getElementById('di-name').value.trim();
+    if(!name) return;
+    await addItem('dateIdeas', { name, cat: document.getElementById('di-cat').value, done: document.getElementById('di-done').value === 'true', notes: document.getElementById('di-notes').value.trim() });
+    ['di-name','di-notes'].forEach(id=>document.getElementById(id).value='');
+    closeModal('dateidea');
+  };
+
+  window.saveMemory = async () => {
+    const title = document.getElementById('m-title').value.trim();
+    if(!title) return;
+    await addItem('memories', { title, date: document.getElementById('m-date').value, text: document.getElementById('m-text').value.trim() });
+    ['m-title','m-date','m-text'].forEach(id=>document.getElementById(id).value='');
+    closeModal('memory');
+  };
+</script>
+
+<script>
+  // ── UI HELPERS (non-module) ──
+  function showTab(name, el) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+    el.classList.add('active');
+  }
+
+  function openModal(name) { document.getElementById('modal-'+name).classList.add('open'); }
+  function closeModal(name) { document.getElementById('modal-'+name).classList.remove('open'); }
+
+  document.querySelectorAll('.modal-overlay').forEach(m =>
+    m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); })
+  );
+</script>
+</body>
+</html>
