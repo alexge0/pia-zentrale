@@ -474,6 +474,59 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ── STARS ── */
+  .stars { display: inline-flex; gap: 2px; }
+  .star { font-size: 14px; cursor: pointer; transition: transform .1s; color: #ddd; }
+  .star.filled { color: #f0a500; }
+  .star:hover { transform: scale(1.2); }
+  .star-display { font-size: 13px; letter-spacing: 1px; }
+
+  /* ── RANDOM PICK ── */
+  .random-banner {
+    background: linear-gradient(135deg, var(--rose-light) 0%, #fdeef0 100%);
+    border: 1px solid var(--rose-mid);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .random-pick-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--rose-dark);
+  }
+  .random-pick-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .btn-random {
+    padding: 9px 18px;
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .btn-random:hover { background: var(--rose-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,96,106,0.3); }
+  .btn-random:active { transform: translateY(0); }
+
+  .sort-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+  .sort-bar label { font-size: 12px; color: var(--text-muted); }
+  .sort-bar select { width: auto; padding: 5px 10px; font-size: 12px; }
+
+  .rating-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
+  .rating-label { font-size: 11px; color: var(--text-muted); }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 500px) {
     .main-content { padding: 1.25rem 1rem; }
@@ -516,6 +569,8 @@
     <button class="tab-btn" onclick="showTab('dates',this)">📅 Termine</button>
     <button class="tab-btn" onclick="showTab('dateideas',this)">✨ Date-Ideen</button>
     <button class="tab-btn" onclick="showTab('memories',this)">📖 Erinnerungen</button>
+    <button class="tab-btn" onclick="showTab('restaurants',this)">🍽️ Restaurants</button>
+    <button class="tab-btn" onclick="showTab('films',this)">🎬 Filme</button>
   </div>
 
   <div class="main-content">
@@ -579,6 +634,41 @@
         <button class="btn btn-sm" onclick="openModal('memory')">+ Neu</button>
       </div>
       <div id="memory-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+    <!-- RESTAURANTS -->
+    <div class="section" id="tab-restaurants">
+      <div class="section-header">
+        <h2 class="section-title">Restaurants</h2>
+        <button class="btn btn-sm" onclick="openModal('restaurant')">+ Neu</button>
+      </div>
+      <div id="restaurant-random-area"></div>
+      <div style="margin-bottom:1rem">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" id="rest-filter-open" onclick="setRestFilter('open')">Noch nicht besucht</button>
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" id="rest-filter-visited" onclick="setRestFilter('visited')">Bereits besucht</button>
+        </div>
+      </div>
+      <div class="sort-bar" id="rest-sort-bar" style="display:none">
+        <label>Sortieren:</label>
+        <select id="rest-sort" onchange="renderRestaurantsFromCache()">
+          <option value="avg">Ø Bewertung ↓</option>
+          <option value="alex">Alex ↓</option>
+          <option value="pia">Pia ↓</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <div id="restaurant-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
+    </div>
+
+    <!-- FILMS -->
+    <div class="section" id="tab-films">
+      <div class="section-header">
+        <h2 class="section-title">Filme</h2>
+        <button class="btn btn-sm" onclick="openModal('film')">+ Neu</button>
+      </div>
+      <div id="film-random-area"></div>
+      <div id="film-list"><div class="loading"><div class="spinner"></div>Lädt…</div></div>
     </div>
 
   </div>
@@ -677,6 +767,79 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-restaurant">
+  <div class="modal">
+    <p class="modal-title">Restaurant hinzufügen</p>
+    <div class="form-row"><label>Name *</label><input type="text" id="r-name" placeholder="z.B. Zum Alten Markt"></div>
+    <div class="form-2">
+      <div class="form-row"><label>Küche</label>
+        <select id="r-cuisine"><option>Deutsch</option><option>Italienisch</option><option>Japanisch</option><option>Asiatisch</option><option>Mexikanisch</option><option>Griechisch</option><option>Indisch</option><option>Amerikanisch</option><option>Französisch</option><option>Sonstiges</option></select>
+      </div>
+      <div class="form-row"><label>Preisklasse</label>
+        <select id="r-price"><option value="1">€ Günstig</option><option value="2">€€ Mittel</option><option value="3">€€€ Gehoben</option></select>
+      </div>
+    </div>
+    <div class="form-row"><label>Ort / Adresse</label><input type="text" id="r-location" placeholder="z.B. Dortmund Innenstadt"></div>
+    <div class="form-row"><label>Notizen</label><textarea id="r-notes" placeholder="Empfehlung von, Spezialität…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('restaurant')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveRestaurant()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-rate-restaurant">
+  <div class="modal">
+    <p class="modal-title" id="rate-rest-title">Bewertung eintragen</p>
+    <input type="hidden" id="rate-rest-id">
+    <div class="form-row">
+      <label>Deine Bewertung (Alex)</label>
+      <div class="stars" id="stars-alex" data-val="0">
+        <span class="star" onclick="setStar('alex',1)">★</span>
+        <span class="star" onclick="setStar('alex',2)">★</span>
+        <span class="star" onclick="setStar('alex',3)">★</span>
+        <span class="star" onclick="setStar('alex',4)">★</span>
+        <span class="star" onclick="setStar('alex',5)">★</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Pias Bewertung</label>
+      <div class="stars" id="stars-pia" data-val="0">
+        <span class="star" onclick="setStar('pia',1)">★</span>
+        <span class="star" onclick="setStar('pia',2)">★</span>
+        <span class="star" onclick="setStar('pia',3)">★</span>
+        <span class="star" onclick="setStar('pia',4)">★</span>
+        <span class="star" onclick="setStar('pia',5)">★</span>
+      </div>
+    </div>
+    <div class="form-row"><label>Notizen zum Besuch</label><textarea id="rate-rest-notes" placeholder="Was war gut / schlecht?"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('rate-restaurant')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveRestaurantRating()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-film">
+  <div class="modal">
+    <p class="modal-title">Film zur Watchlist</p>
+    <div class="form-row"><label>Titel *</label><input type="text" id="f-title" placeholder="z.B. Parasite"></div>
+    <div class="form-2">
+      <div class="form-row"><label>Genre</label>
+        <select id="f-genre"><option>Drama</option><option>Komödie</option><option>Thriller</option><option>Horror</option><option>Action</option><option>Romance</option><option>Sci-Fi</option><option>Dokumentation</option><option>Animation</option><option>Sonstiges</option></select>
+      </div>
+      <div class="form-row"><label>Wer wills sehen?</label>
+        <select id="f-who"><option>Beide</option><option>Ich (Alex)</option><option>Pia</option></select>
+      </div>
+    </div>
+    <div class="form-row"><label>Notizen</label><textarea id="f-notes" placeholder="Streaming-Plattform, Empfehlung von…"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('film')">Abbrechen</button>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveFilm()">Speichern</button>
+    </div>
+  </div>
+</div>
+
 <!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -689,14 +852,13 @@
   // 🔧 HIER DEINE FIREBASE CONFIG EINTRAGEN
   // ─────────────────────────────────────────────
   const firebaseConfig = {
-  apiKey: "AIzaSyC3dUNgeKzMTn5IBhU2aUJ2ZXLgZhCZRcM",
-  authDomain: "pia-zentrale.firebaseapp.com",
-  projectId: "pia-zentrale",
-  storageBucket: "pia-zentrale.firebasestorage.app",
-  messagingSenderId: "732191885133",
-  appId: "1:732191885133:web:39d6b80810008db293d904"
-};
-
+    apiKey:            "DEIN_API_KEY",
+    authDomain:        "DEIN_PROJECT.firebaseapp.com",
+    projectId:         "DEIN_PROJECT_ID",
+    storageBucket:     "DEIN_PROJECT.appspot.com",
+    messagingSenderId: "DEINE_SENDER_ID",
+    appId:             "DEINE_APP_ID"
+  };
   // ─────────────────────────────────────────────
 
   const app  = initializeApp(firebaseConfig);
@@ -778,17 +940,26 @@
   }
 
   // ── LOAD ALL ──
+  let _restaurantsCache = [];
+  let _filmsCache = [];
+  let _restFilter = 'open';
+
   async function loadAll() {
-    const [gifts, prefs, dates, dateIdeas, memories, todos] = await Promise.all([
+    const [gifts, prefs, dates, dateIdeas, memories, todos, restaurants, films] = await Promise.all([
       getAll('gifts'), getAll('prefs'), getAll('dates'),
-      getAll('dateIdeas'), getAll('memories'), getAll('todos')
+      getAll('dateIdeas'), getAll('memories'), getAll('todos'),
+      getAll('restaurants'), getAll('films')
     ]);
+    _restaurantsCache = restaurants;
+    _filmsCache = films;
     renderOverview(gifts, prefs, dateIdeas, memories, todos, dates);
     renderGifts(gifts);
     renderPrefs(prefs);
     renderDates(dates);
     renderDateIdeas(dateIdeas);
     renderMemories(memories);
+    renderRestaurantsFromCache();
+    renderFilms(films);
   }
 
   // ── UTILS ──
@@ -1004,6 +1175,188 @@
     await addItem('memories', { title, date: document.getElementById('m-date').value, text: document.getElementById('m-text').value.trim() });
     ['m-title','m-date','m-text'].forEach(id=>document.getElementById(id).value='');
     closeModal('memory');
+  };
+
+  // ── RESTAURANTS ──
+  function starsHtml(val) {
+    return [1,2,3,4,5].map(i=>`<span style="color:${i<=val?'#f0a500':'#ddd'}">★</span>`).join('');
+  }
+
+  window.renderRestaurantsFromCache = () => {
+    const restaurants = _restaurantsCache;
+    const filter = _restFilter;
+    const sortEl = document.getElementById('rest-sort');
+    const sort = sortEl ? sortEl.value : 'avg';
+    const sortBar = document.getElementById('rest-sort-bar');
+
+    const open    = restaurants.filter(r => !r.visited);
+    const visited = restaurants.filter(r => r.visited);
+
+    // random pick banner
+    const randomArea = document.getElementById('restaurant-random-area');
+    if(open.length) {
+      randomArea.innerHTML = `
+        <div class="random-banner">
+          <div style="flex:1" id="rest-random-result">
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Zufälliger Vorschlag</p>
+            <p class="random-pick-name" id="rest-pick-name">?</p>
+            <p class="random-pick-sub" id="rest-pick-sub"></p>
+          </div>
+          <button class="btn-random" onclick="pickRandomRestaurant()">🎲 Würfeln</button>
+        </div>`;
+    } else {
+      randomArea.innerHTML = '';
+    }
+
+    if(filter === 'visited') {
+      sortBar.style.display = 'flex';
+      let sorted = [...visited];
+      if(sort === 'avg') sorted.sort((a,b) => ((b.ratingAlex||0)+(b.ratingPia||0)) - ((a.ratingAlex||0)+(a.ratingPia||0)));
+      else if(sort === 'alex') sorted.sort((a,b) => (b.ratingAlex||0) - (a.ratingAlex||0));
+      else if(sort === 'pia')  sorted.sort((a,b) => (b.ratingPia||0)  - (a.ratingPia||0));
+      else sorted.sort((a,b) => a.name.localeCompare(b.name));
+
+      document.getElementById('restaurant-list').innerHTML = sorted.length
+        ? sorted.map(r=>`
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <span class="card-title">${r.name}</span>
+                  <p class="card-sub">${r.cuisine}${r.location?' · '+r.location:''} · ${'€'.repeat(parseInt(r.price)||1)}</p>
+                </div>
+                <div style="display:flex;gap:5px;align-items:center">
+                  <button class="btn-icon" onclick="window._deleteItem('restaurants','${r.id}')">✕</button>
+                </div>
+              </div>
+              <div class="rating-row">
+                <span class="rating-label">Alex:</span><span>${starsHtml(r.ratingAlex||0)}</span>
+                <span class="rating-label" style="margin-left:8px">Pia:</span><span>${starsHtml(r.ratingPia||0)}</span>
+              </div>
+              ${r.visitNotes?`<p class="card-sub" style="margin-top:5px">${r.visitNotes}</p>`:''}
+            </div>`).join('')
+        : '<div class="empty"><div class="empty-icon">🍽️</div>Noch keine besuchten Restaurants</div>';
+    } else {
+      sortBar.style.display = 'none';
+      document.getElementById('restaurant-list').innerHTML = open.length
+        ? open.map(r=>`
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <span class="card-title">${r.name}</span>
+                  <p class="card-sub">${r.cuisine}${r.location?' · '+r.location:''} · ${'€'.repeat(parseInt(r.price)||1)}</p>
+                </div>
+                <div style="display:flex;gap:5px;align-items:center">
+                  <button class="btn-sm" onclick="openRateRestaurant('${r.id}','${r.name.replace(/'/g,"\\'")}')">✓ Besucht</button>
+                  <button class="btn-icon" onclick="window._deleteItem('restaurants','${r.id}')">✕</button>
+                </div>
+              </div>
+              ${r.notes?`<p class="card-sub" style="margin-top:4px">${r.notes}</p>`:''}
+            </div>`).join('')
+        : '<div class="empty"><div class="empty-icon">🍽️</div>Keine Restaurants auf der Wunschliste</div>';
+    }
+
+    // highlight active filter button
+    document.getElementById('rest-filter-open').style.background = filter==='open' ? 'var(--rose-mid)' : '';
+    document.getElementById('rest-filter-open').style.color = filter==='open' ? 'var(--rose-dark)' : '';
+    document.getElementById('rest-filter-visited').style.background = filter==='visited' ? 'var(--rose-mid)' : '';
+    document.getElementById('rest-filter-visited').style.color = filter==='visited' ? 'var(--rose-dark)' : '';
+  };
+
+  window.setRestFilter = (f) => { _restFilter = f; renderRestaurantsFromCache(); };
+
+  window.pickRandomRestaurant = () => {
+    const open = _restaurantsCache.filter(r=>!r.visited);
+    if(!open.length) return;
+    const pick = open[Math.floor(Math.random()*open.length)];
+    document.getElementById('rest-pick-name').textContent = pick.name;
+    document.getElementById('rest-pick-sub').textContent = `${pick.cuisine}${pick.location?' · '+pick.location:''} · ${'€'.repeat(parseInt(pick.price)||1)}`;
+  };
+
+  window.openRateRestaurant = (id, name) => {
+    document.getElementById('rate-rest-id').value = id;
+    document.getElementById('rate-rest-title').textContent = `Bewertung: ${name}`;
+    document.getElementById('rate-rest-notes').value = '';
+    setStar('alex',0); setStar('pia',0);
+    openModal('rate-restaurant');
+  };
+
+  window.setStar = (who, val) => {
+    const el = document.getElementById(`stars-${who}`);
+    el.dataset.val = val;
+    el.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('filled', i < val));
+  };
+
+  window.saveRestaurant = async () => {
+    const name = document.getElementById('r-name').value.trim();
+    if(!name) return;
+    await addItem('restaurants', {
+      name, cuisine: document.getElementById('r-cuisine').value,
+      price: document.getElementById('r-price').value,
+      location: document.getElementById('r-location').value.trim(),
+      notes: document.getElementById('r-notes').value.trim(),
+      visited: false
+    });
+    ['r-name','r-location','r-notes'].forEach(id=>document.getElementById(id).value='');
+    closeModal('restaurant');
+  };
+
+  window.saveRestaurantRating = async () => {
+    const id = document.getElementById('rate-rest-id').value;
+    const ratingAlex = parseInt(document.getElementById('stars-alex').dataset.val)||0;
+    const ratingPia  = parseInt(document.getElementById('stars-pia').dataset.val)||0;
+    const visitNotes = document.getElementById('rate-rest-notes').value.trim();
+    await updateItem('restaurants', id, { visited: true, ratingAlex, ratingPia, visitNotes });
+    closeModal('rate-restaurant');
+  };
+
+  // ── FILMS ──
+  window.renderFilms = (films) => {
+    const randomArea = document.getElementById('film-random-area');
+    if(films.length) {
+      randomArea.innerHTML = `
+        <div class="random-banner">
+          <div style="flex:1">
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Zufälliger Film</p>
+            <p class="random-pick-name" id="film-pick-name">?</p>
+            <p class="random-pick-sub" id="film-pick-sub"></p>
+          </div>
+          <button class="btn-random" onclick="pickRandomFilm()">🎲 Würfeln</button>
+        </div>`;
+    } else {
+      randomArea.innerHTML = '';
+    }
+
+    const genreBadge = {Drama:'badge-blue',Komödie:'badge-amber',Thriller:'badge-rose',Horror:'badge-rose',Action:'badge-amber',Romance:'badge-rose','Sci-Fi':'badge-blue',Dokumentation:'badge-green',Animation:'badge-green',Sonstiges:'badge-done'};
+    const whoBadge = {'Beide':'badge-rose','Ich (Alex)':'badge-blue','Pia':'badge-green'};
+    document.getElementById('film-list').innerHTML = films.length
+      ? films.map(f=>`
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">${f.title}</span>
+              <div style="display:flex;gap:5px;align-items:center;flex-shrink:0">
+                <span class="badge ${genreBadge[f.genre]||'badge-done'}">${f.genre}</span>
+                <span class="badge ${whoBadge[f.who]||'badge-rose'}" style="font-size:10px">${f.who}</span>
+                <button class="btn-icon" onclick="window._deleteItem('films','${f.id}')">✕</button>
+              </div>
+            </div>
+            ${f.notes?`<p class="card-sub" style="margin-top:4px">${f.notes}</p>`:''}
+          </div>`).join('')
+      : '<div class="empty"><div class="empty-icon">🎬</div>Noch keine Filme auf der Watchlist</div>';
+  };
+
+  window.pickRandomFilm = () => {
+    if(!_filmsCache.length) return;
+    const pick = _filmsCache[Math.floor(Math.random()*_filmsCache.length)];
+    document.getElementById('film-pick-name').textContent = pick.title;
+    document.getElementById('film-pick-sub').textContent = `${pick.genre} · ${pick.who}`;
+  };
+
+  window.saveFilm = async () => {
+    const title = document.getElementById('f-title').value.trim();
+    if(!title) return;
+    await addItem('films', { title, genre: document.getElementById('f-genre').value, who: document.getElementById('f-who').value, notes: document.getElementById('f-notes').value.trim() });
+    ['f-title','f-notes'].forEach(id=>document.getElementById(id).value='');
+    closeModal('film');
   };
 </script>
 
